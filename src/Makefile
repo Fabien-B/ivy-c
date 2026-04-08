@@ -137,10 +137,10 @@ TCLOBJ = ivytcl.o  timer.o ivysocket.o givy.o ivybuffer.o ivyfifo.o ivybind.o in
 TARGETLIBS=libivy.so.$(MAJOR).$(MINOR) #libgivy.so.$(MAJOR).$(MINOR) libxtivy.so.$(MAJOR).$(MINOR)  libtclivy.so.$(MAJOR).$(MINOR)
 STATICTARGETLIBS=libivy.a #libgivy.a libxtivy.a libtclivy.a
 
-# ifeq ($(HAVE_GLIB),yes)
-# 		TARGETLIBS += libglibivy.so.$(MAJOR).$(MINOR)
-# 		STATICTARGETLIBS += libglibivy.a
-# endif
+ifeq ($(HAVE_GLIB),yes)
+		TARGETLIBS += libglibivy.so.$(MAJOR).$(MINOR)
+		STATICTARGETLIBS += libglibivy.a
+endif
 
 
 # not yet need Modified Glut ivyglutprobe
@@ -265,11 +265,13 @@ installlibs: static-libs shared-libs
 #	install -m644 libgivy.a						$(DESTDIR)$(PREFIX)$(LIB)
 #	-install -m644 libxtivy.a					$(DESTDIR)$(X11_PREFIX)$(LIB)
 #	install -m644 libtclivy.a					$(DESTDIR)$(PREFIX)$(LIB)
+	install -m644 libglibivy.a					$(DESTDIR)$(PREFIX)$(LIB)
 
 	install -m644 libivy.so.$(MAJOR).$(MINOR)			$(DESTDIR)$(PREFIX)$(LIB)
 #	install -m644 libgivy.so.$(MAJOR).$(MINOR)			$(DESTDIR)$(PREFIX)$(LIB)
 #	-install -m644 libxtivy.so.$(MAJOR).$(MINOR)			$(DESTDIR)$(X11_PREFIX)$(LIB)
 #	install -m644 libtclivy.so.$(MAJOR).$(MINOR)			$(DESTDIR)$(PREFIX)$(LIB)
+	install -m644 libglibivy.so.$(MAJOR).$(MINOR)			$(DESTDIR)$(PREFIX)$(LIB)
 
 installlibs_omp: static-libs shared-libs
 	test -d $(DESTDIR)$(PREFIX)$(LIB)  || mkdir -p $(DESTDIR)$(PREFIX)$(LIB)
@@ -285,7 +287,7 @@ includes:
 	install -m644 ivybuffer.h					$(DESTDIR)$(PREFIX)/include/Ivy/
 	install -m644 ivychannel.h					$(DESTDIR)$(PREFIX)/include/Ivy/
 	install -m644 ivydebug.h					$(DESTDIR)$(PREFIX)/include/Ivy/
-	#install -m644 ivyglibloop.h					$(DESTDIR)$(PREFIX)/include/Ivy/
+	install -m644 ivyglibloop.h					$(DESTDIR)$(PREFIX)/include/Ivy/
 	#install -m644 ivyglutloop.h*					$(DESTDIR)$(PREFIX)/include/Ivy/
 	install -m644 ivyloop.h						$(DESTDIR)$(PREFIX)/include/Ivy/
 	install -m644 ivysocket.h					$(DESTDIR)$(PREFIX)/include/Ivy/
@@ -341,8 +343,8 @@ rpm::
 	/usr/bin/rpmize
 
 pkgconf:
-	for f in ivy-c.pc.in ; do \
-		sed -e 's,/lib64,/lib,; s,@PREFIX@,$(PREFIX),; s,@MAJOR@,$(MAJOR),; s,@MINOR@,$(MINOR),; s,@PCRELIB@,$(PCRELIB),; s,@EXTRALIB@,$(EXTRALIB),' $$f > libivy.pc ; \
+	for f in *.pc.in ; do \
+		sed -e 's,/lib64,/lib,; s,@PREFIX@,$(PREFIX),; s,@MAJOR@,$(MAJOR),; s,@MINOR@,$(MINOR),; s,@PCRELIB@,$(PCRELIB),; s,@EXTRALIB@,$(EXTRALIB),' $$f > $$(echo $$f | cut -f 1,2 -d .) ; \
 	done
 
 installpkgconf: pkgconf
