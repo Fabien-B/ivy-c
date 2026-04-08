@@ -8,7 +8,7 @@
  *
  *	Authors: Francois-Regis Colin <fcolin@cena.dgac.fr>
  *
- *	$Id$
+ *	$Id: ivybuffer.h 3243 2008-03-21 09:03:34Z bustico $
  *
  *	Please refer to file version.h for the
  *	copyright notice regarding this software

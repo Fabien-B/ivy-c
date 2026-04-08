@@ -8,7 +8,7 @@
  *
  *	Authors: François-Régis Colin <fcolin@cena.dgac.fr>
  *
- *	$Id$
+ *	$Id: timer.c 3591 2013-06-20 17:23:52Z bustico $
  * 
  *	Please refer to file version.h for the
  *	copyright notice regarding this software

@@ -8,7 +8,7 @@
  *
  *	Authors: François-Régis Colin <fcolin@cena.fr>
  *
- *	$Id$
+ *	$Id: ivyglibloop.c 3460 2011-01-24 13:39:15Z bustico $
  * 
  *	Please refer to file version.h for the
  *	copyright notice regarding this software

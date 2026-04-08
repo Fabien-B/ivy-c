@@ -8,7 +8,7 @@
  *		Stéphane Chatty <chatty@cena.dgac.fr>
  *		Yannick Jestin <jestin@cena.fr>
  *
- *	$Id$
+ *	$Id: version.h 3626 2014-12-23 09:35:46Z bustico $
  *
  *	This program is free software. You can redistribute it and/or
  *	modify it under the terms of the GNU LGPL (Library General Public License)

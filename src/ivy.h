@@ -9,7 +9,7 @@
  *	Authors: François-Régis Colin <fcolin@cena.dgac.fr>
  *		 Stéphane Chatty <chatty@cena.dgac.fr>
  *
- *	$Id$
+ *	$Id: ivy.h 3588 2013-06-19 12:39:15Z bustico $
  * 
  *	Please refer to file version.h for the
  *	copyright notice regarding this software

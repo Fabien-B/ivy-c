@@ -52,9 +52,6 @@ ifndef TCLVERS
 TCLVERS:= $(shell perl -e '@_=sort map (m|/usr/lib64/libtcl(\d\.\d)\.so|, glob ("/usr/lib64/libtcl*")); print pop @_')
 endif
 ifndef TCLVERS
-TCLVERS:= $(shell perl -e '@_=sort map (m|/usr/lib/tcl(\d\.\d)|, glob ("/usr/lib/tcl*")); print pop @_')
-endif
-ifndef TCLVERS
 #TCLVERS=8.4
 TCLVERS=
 endif
@@ -162,7 +159,7 @@ ivytcl.o: ivytcl.c
 	$(CC) -c $(CFLAGS) $(TCLINCL) $(CHANNEL) ivytcl.c
 
 givy.o: ivy.c
-	$(CC) -c $(CFLAGS) -o givy.o ivy.c
+	$(CC) -c $(CFLAGS) -DDEBUG -o givy.o ivy.c
 
 ivy_omp.o: ivy.c
 	$(CC) -c $(OMPCFLAGS)  -o ivy_omp.o ivy.c

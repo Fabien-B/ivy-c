@@ -2,32 +2,32 @@
  *	IvyThroughput
  *
  *	Copyright (C) 2008
- *	Centre d'Études de la Navigation Aérienne
+ *	Centre d'ï¿½tudes de la Navigation Aï¿½rienne
  */
- 
+
 
 // g++ ivythroughput.cpp -o ivythroughput -L/usr/local/lib64/ -Wl,-rpath,/usr/local/lib64/ -livy -lpcrecpp
 
-/* SCENARIO  
-   
-  ° traitement des options :
+/* SCENARIO
+
+  ï¿½ traitement des options :
     -v (affi version) -b bus, -r regexp file, -m message file, -n : nombre de recepteurs
-    -t [type de test => ml (memory leak), tp (throughput), dx (gestion des deconnexions 
+    -t [type de test => ml (memory leak), tp (throughput), dx (gestion des deconnexions
        intenpestives)
 
     test memory leak
-  ° fork d'un emetteur et d'un (ou plusieurs) recepteur : le recepteur s'abonne à toutes les regexps,
-    se desabonne, se reabonne etc etc en boucle : on teste que l'empreinte mémoire
+  ï¿½ fork d'un emetteur et d'un (ou plusieurs) recepteur : le recepteur s'abonne ï¿½ toutes les regexps,
+    se desabonne, se reabonne etc etc en boucle : on teste que l'empreinte mï¿½moire
     de l'emetteur ne grossisse pas
 
     test throughput :
-  ° fork d'un emetteur et d'un ou plusieurs recepteurs : les recepteurs s'abonnent à toutes les regexps
-  ° l'emetteur envoie en boucle tous les messages du fichier de message
-  ° l'emetteur note le temps d'envoi des messages
-  ° l'emetteur envoie un die all et quitte
+  ï¿½ fork d'un emetteur et d'un ou plusieurs recepteurs : les recepteurs s'abonnent ï¿½ toutes les regexps
+  ï¿½ l'emetteur envoie en boucle tous les messages du fichier de message
+  ï¿½ l'emetteur note le temps d'envoi des messages
+  ï¿½ l'emetteur envoie un die all et quitte
 
   UTILISATION TYPIQUES:
-  pour la deconnexion intenpestive : 
+  pour la deconnexion intenpestive :
   ivythroughput -R 500 -t dx -d 40 -n 2
 */
 
@@ -62,7 +62,7 @@ typedef struct {
   unsigned int currentBind;
   unsigned int totalBind;
 } InfoBind;
-typedef std::map<string, InfoBind> MapBindByClnt;
+typedef std::map<pcrecpp::string, InfoBind> MapBindByClnt;
 
 #define MILLISEC 1000.0
 
@@ -80,11 +80,11 @@ typedef struct {
 extern char *optarg;
 extern int   optind, opterr, optopt;
 
-void recepteur_tp (const char* bus, KindOfTest kod, unsigned int inst, 
+void recepteur_tp (const char* bus, KindOfTest kod, unsigned int inst,
 		   const ListOfString& regexps, unsigned int exitAfter);
-void recepteur_ml (const char* bus, KindOfTest kod, unsigned int inst, 
+void recepteur_ml (const char* bus, KindOfTest kod, unsigned int inst,
 		   const ListOfString& regexps);
-void emetteur (const char* bus, KindOfTest kod, int testDuration, 
+void emetteur (const char* bus, KindOfTest kod, int testDuration,
 	       const ListOfString& messages, int regexpSize);
 
 bool getMessages (const char*fileName, ListOfString &messages, unsigned int numMess);
@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
   ListOfString messages, regexps;
   pid_t        pid;
   ListOfPid    recPid;
-  
+
   const char* helpmsg =
     "[options] \n"
     "\t -b bus\tdefines the Ivy bus to which to connect to, defaults to 127:2010\n"
@@ -131,7 +131,7 @@ int main(int argc, char *argv[])
              "simulate N clients with differents regexps\n"
     "\t -m \t messageFile\tread list of messages from file (default to testivy/messages.ivy)\n"
     "\t -M \t restrict to M firsts messages instead of all the message in the message file \n"
-    "\t -n \t number of clients\n" 
+    "\t -n \t number of clients\n"
     "\t -d \t duration of the test in seconds\n" ;
 
 
@@ -148,10 +148,10 @@ int main(int argc, char *argv[])
       break;
     case 'v':
       printf("ivy c library version %d.%d\n",IVYMAJOR_VERSION, IVYMINOR_VERSION);
-      break; 
+      break;
     case 'p':
       regexpAreUniq = true;
-      break; 
+      break;
     case 't':
       if (strcasecmp (optarg, "ml") == 0) {
 	kindOfTest = memoryLeak1;
@@ -191,11 +191,11 @@ int main(int argc, char *argv[])
       exit(1);
     }
 
-  if (!getRegexps (regexpFile, regexps, numRegexps)) 
+  if (!getRegexps (regexpFile, regexps, numRegexps))
     {return (1);};
 
   if (kindOfTest != memoryLeak1) {
-    if (!getMessages (messageFile, messages, numMessages)) 
+    if (!getMessages (messageFile, messages, numMessages))
       {return (1);};
   }
 
@@ -227,10 +227,10 @@ int main(int argc, char *argv[])
       recReady[i]=false;
     }
   }
-  
+
   emetteur  (bus, kindOfTest, testDuration, messages, regexps.size());
 
-  ListOfPid::iterator  iter;  
+  ListOfPid::iterator  iter;
   for (iter=recPid.begin(); iter != recPid.end(); iter++) {
     kill (*iter, SIGTERM);
   }
@@ -238,7 +238,7 @@ int main(int argc, char *argv[])
   for (iter=recPid.begin(); iter != recPid.end(); iter++) {
     waitpid (*iter, NULL, 0);
   }
-  
+
   return (0);
 }
 
@@ -253,7 +253,7 @@ int main(int argc, char *argv[])
 #                |  __/ | | | | | | |  __/ \ |_   \ |_   |  __/ | |_| | | |
 #                 \___| |_| |_| |_|  \___|  \__|   \__|   \___|  \__,_| |_|
 */
-void emetteur (const char* bus, KindOfTest kod, int testDuration, 
+void emetteur (const char* bus, KindOfTest kod, int testDuration,
 	       const ListOfString& messages, int regexpSize)
 {
   printf ("DBG> emetteur start, pid=%d\n", getpid());
@@ -262,7 +262,7 @@ void emetteur (const char* bus, KindOfTest kod, int testDuration,
 
 
   IvySetBindCallback (binCB, (void *) (regexpSize+2l));
-  IvyBindMsg (recepteurReadyCB, (void *) &messages, 
+  IvyBindMsg (recepteurReadyCB, (void *) &messages,
 	      "^IvyThroughputReceive_(\\d+)\\s+Ready");
 
   TimerRepeatAfter (1, testDuration *1000, stopCB, NULL);
@@ -281,7 +281,7 @@ void emetteur (const char* bus, KindOfTest kod, int testDuration,
 #                | |    |  __/ | (__  |  __/ | |     \ |_   |  __/ | |_| | | |
 #                |_|     \___|  \___|  \___| |_|      \__|   \___|  \__,_| |_|
 */
-void recepteur_tp (const char* bus, KindOfTest kod, unsigned int inst, 
+void recepteur_tp (const char* bus, KindOfTest kod, unsigned int inst,
 		const ListOfString& regexps,  unsigned int exitAfter)
 {
   std::string agentName = "IvyThroughputReceive_";
@@ -294,12 +294,12 @@ void recepteur_tp (const char* bus, KindOfTest kod, unsigned int inst,
 
   printf ("DBG> recepteur_%d start, pid=%d\n", inst, getpid());
   IvyInit (agentName.c_str(), agentNameReady.c_str(), congestCB, NULL,NULL,NULL);
-  
+
   unsigned int debugInt = 0;
-  ListOfString::const_iterator  iter;  
+  ListOfString::const_iterator  iter;
   for (iter=regexps.begin(); iter != regexps.end(); iter++) {
     debugInt++;
-    string reg = *iter;
+    pcrecpp::string reg = *iter;
     if (regexpAreUniq) { ((reg += "(") += stream.str()) += ")?";}
     IvyBindMsg (recepteurCB, (void *) long(inst), "%s", reg.c_str());
   }
@@ -311,13 +311,13 @@ void recepteur_tp (const char* bus, KindOfTest kod, unsigned int inst,
   } else if  (kod == disconnect) {
     TimerRepeatAfter (1, exitAfter*1000/3, doNothingAndSuicideCB, (void *) long(exitAfter));
   }
-  
+
   //usleep (inst * 50 * 1000);
   IvyStart (bus);
   IvyMainLoop ();
 }
 
-void recepteur_ml (const char* bus, KindOfTest kod, unsigned int inst, 
+void recepteur_ml (const char* bus, KindOfTest kod, unsigned int inst,
 		const ListOfString& regexps)
 {
   std::string agentName = "IvyThroughputReceive_";
@@ -332,12 +332,12 @@ void recepteur_ml (const char* bus, KindOfTest kod, unsigned int inst,
 
   printf ("DBG> recepteur_%d start, pid=%d\n", inst, getpid());
   IvyInit (agentName.c_str(), agentNameReady.c_str(), congestCB, NULL,NULL,NULL);
-  
+
   unsigned int debugInt = 0;
-  ListOfString::const_iterator  iter;  
+  ListOfString::const_iterator  iter;
   for (iter=regexps.begin(); iter != regexps.end(); iter++) {
     debugInt++;
-    string reg = *iter;
+    pcrecpp::string reg = *iter;
     if (regexpAreUniq) { (reg += " ") += stream.str();}
     bindIdList.push_back (IvyBindMsg (recepteurCB, (void *) long(inst), "%s", reg.c_str()));
   }
@@ -373,19 +373,19 @@ bool getMessages (const char*fileName, ListOfString &messages, unsigned int numM
   FILE *infile;
   char buffer [1024*64];
   pcrecpp::RE pcreg ("\"(.*)\"$");
-  string  aMsg;
+  pcrecpp::string  aMsg;
 
   infile = fopen(fileName, "r");
   if (!infile) {
     fprintf (stderr, "impossible d'ouvrir %s en lecture\n", fileName);
     return false;
   }
-  
+
   while ((fgets (buffer, sizeof (buffer), infile) != NULL) && (nbMess < numMess)) {
     if (pcreg.PartialMatch (buffer, &aMsg)) {
       messages.push_back (aMsg);
       nbMess++;
-    } 
+    }
   }
   fclose (infile);
   return (true);
@@ -406,14 +406,14 @@ bool getRegexps (const char*fileName, ListOfString &regexps, unsigned int numReg
   char buffer [1024*64];
   pcrecpp::RE pcreg1 ("add regexp \\d+ : (.*)$");
   pcrecpp::RE pcreg2 ("(\\^.*)$");
-  string  aMsg;
+  pcrecpp::string  aMsg;
 
   infile = fopen(fileName, "r");
   if (!infile) {
     fprintf (stderr, "impossible d'ouvrir %s en lecture\n", fileName);
     return false;
   }
-  
+
   while ((fgets (buffer, sizeof (buffer), infile) != NULL) && (nbReg < numReg)) {
     if (pcreg1.PartialMatch (buffer, &aMsg)) {
       regexps.push_back (aMsg);
@@ -441,7 +441,7 @@ bool getRegexps (const char*fileName, ListOfString &regexps, unsigned int numReg
 double currentTime()
 {
   double current;
-  
+
   struct timeval stamp;
   gettimeofday( &stamp, NULL );
   current = (double)stamp.tv_sec * MILLISEC + (double)(stamp.tv_usec/MILLISEC);
@@ -457,9 +457,9 @@ double currentTime()
 #                | |_) | | |  | | | | | |____  | |_) |
 #                |_.__/  |_|  |_| |_|  \_____| |____/
 */
-void binCB( IvyClientPtr app, void *user_data, int id, const char* regexp,  IvyBindEvent event ) 
+void binCB( IvyClientPtr app, void *user_data, int id, const char* regexp,  IvyBindEvent event )
 {
-  string appName = IvyGetApplicationName( app );
+  pcrecpp::string appName = IvyGetApplicationName( app );
   static MapBindByClnt bindByClnt;
 
   if (bindByClnt.find (appName) == bindByClnt.end()) {
@@ -474,7 +474,7 @@ void binCB( IvyClientPtr app, void *user_data, int id, const char* regexp,  IvyB
       if ((bindByClnt[appName]).currentBind == (bindByClnt[appName]).totalBind) {
 	printf("Application:%s ALL REGEXPS BINDED\n", appName.c_str());
       } else {
-	//	printf("Application:%s bind [%d/%d]\n", appName.c_str(), 
+	//	printf("Application:%s bind [%d/%d]\n", appName.c_str(),
 	//     (bindByClnt[appName]).currentBind, (bindByClnt[appName]).totalBind);
       }
       break;
@@ -494,9 +494,9 @@ void binCB( IvyClientPtr app, void *user_data, int id, const char* regexp,  IvyB
 
 
 
-void congestCB ( IvyClientPtr app, void *user_data, IvyApplicationEvent event ) 
+void congestCB ( IvyClientPtr app, void *user_data, IvyApplicationEvent event )
 {
-  string appName = IvyGetApplicationName( app );
+  pcrecpp::string appName = IvyGetApplicationName( app );
 
   switch ( event ) {
 #if IVYMINOR_VERSION >= 11
@@ -538,7 +538,7 @@ void sendAllMessageCB (TimerId id, void *user_data, unsigned long delta)
   unsigned int envoyes=0;
 
   IvySendMsg ("startOfSequence");
-  ListOfString::iterator  iter;  
+  ListOfString::iterator  iter;
   for (iter=messages->begin(); iter != messages->end(); iter++) {
     envoyes += IvySendMsg ("%s", (*iter).c_str());
   }
@@ -547,7 +547,7 @@ void sendAllMessageCB (TimerId id, void *user_data, unsigned long delta)
   printf ("[ivy %d.%d] envoyer [%d/%d] messages filtres par %d regexps a %d clients "
 	  "prends %.1f secondes\n",
 	  IVYMAJOR_VERSION, IVYMINOR_VERSION,
-	  envoyes, nbMess, nbReg, numClients, 
+	  envoyes, nbMess, nbReg, numClients,
 	  (currentTime()-startTime) / 1000.0) ;
   TimerRepeatAfter (1, 1000, sendAllMessageCB ,user_data);
 }
@@ -575,7 +575,7 @@ void recepteurReadyCB (IvyClientPtr app, void *user_data, int argc, char *argv[]
       readyToStart = false;
     }
   }
-  
+
   if (readyToStart == true) {
     if (kindOfTest != memoryLeak1) {
       TimerRepeatAfter (1, 100, sendAllMessageCB , messages);
@@ -604,22 +604,22 @@ void endOfSeqCB (IvyClientPtr app, void *user_data, int argc, char *argv[])
 void desabonneEtReabonneCB (TimerId id, void *user_data, unsigned long delta)
 {
   MlDataStruct *mds = (MlDataStruct *) user_data;
-  
+
   //  printf ("on entre dans desabonneEtReabonneCB\n");
-  
-  ListOfMsgRcvPtr::iterator  iter;  
+
+  ListOfMsgRcvPtr::iterator  iter;
 
   // DESABONNE
   for (iter=mds->bindIdList->begin(); iter != mds->bindIdList->end(); iter++) {
     IvyUnbindMsg (*iter);
   }
   mds->bindIdList->clear ();
-  
+
   // REABONNE
-  ListOfString::const_iterator  iter2;  
+  ListOfString::const_iterator  iter2;
   for (iter2=mds->regexps->begin(); iter2 != mds->regexps->end(); iter2++) {
-    string reg = *iter2;
-    mds->bindIdList->push_back (IvyBindMsg (recepteurCB, (void *) long(mds->inst), 
+    pcrecpp::string reg = *iter2;
+    mds->bindIdList->push_back (IvyBindMsg (recepteurCB, (void *) long(mds->inst),
 					    "%s", reg.c_str()));
   }
 
@@ -642,10 +642,10 @@ void desabonneEtReabonneCB (TimerId id, void *user_data, unsigned long delta)
 void changeRegexpCB (TimerId id, void *user_data, unsigned long delta)
 {
   MlDataStruct *mds = (MlDataStruct *) user_data;
-  
+
   //  printf ("on entre dans abonneEtDesabonneCB\n");
-  
-  ListOfMsgRcvPtr::iterator  iter;  
+
+  ListOfMsgRcvPtr::iterator  iter;
 
 
   for (iter=mds->bindIdList->begin(); iter != mds->bindIdList->end(); iter++) {
@@ -672,4 +672,3 @@ void doNothingAndSuicideCB (TimerId id, void *user_data, unsigned long delta)
   _exit(42);
   printf ("DBG> CECI NE DEVRAIT JAMAIS ETRE AFFICHE\n");
 }
-

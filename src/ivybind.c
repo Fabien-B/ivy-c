@@ -9,7 +9,7 @@
  *
  *	Authors: François-Régis Colin <fcolin@cena.fr>
  *
- *	$Id$
+ *	$Id: ivybind.c 3627 2015-01-07 14:01:47Z bustico $
  * 
  *	Please refer to file version.h for the
  *	copyright notice regarding this software

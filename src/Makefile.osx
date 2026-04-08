@@ -78,7 +78,7 @@ CFLAGS = -g -Wall -Wshadow $(FPIC)
 	$(CPP) $(CFLAGS)  -c $*.cpp
 
 
-all: static-libs  shared-libs pkgconf tools
+all: static-libs shared-libs pkgconf
 libomp: libivy_omp.a
 
 omp: libomp

@@ -8,7 +8,7 @@
  *
  *	Authors: François-Régis Colin <fcolin@cena.dgac.fr>
  *
- *	$Id$
+ *	$Id: ivytcl.h 3061 2007-02-13 08:35:08Z fourdan $
  * 
  *	Please refer to file version.h for the
  *	copyright notice regarding this software

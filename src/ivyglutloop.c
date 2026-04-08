@@ -9,7 +9,7 @@
  *	Authors: François-Régis Colin <colin@cenatoulouse.dgac.fr>
  *		 Stéphane Chatty <chatty@cenatoulouse.dgac.fr>
  *
- *	$Id$
+ *	$Id: ivyglutloop.c 3460 2011-01-24 13:39:15Z bustico $
  * 
  *	Please refer to file version.h for the
  *	copyright notice regarding this software

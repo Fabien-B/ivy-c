@@ -9,7 +9,7 @@
  *
  *	Authors: Francois-Regis Colin,Stephane Chatty, Alexandre Bustico
  *
- *	$Id$
+ *	$Id: ivy.c 3602 2014-04-07 08:35:53Z bustico $
  *
  *	Please refer to file version.h for the
  *	copyright notice regarding this software

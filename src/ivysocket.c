@@ -8,7 +8,7 @@
  *
  *	Authors: Francois-Regis Colin <fcolin@cena.fr>
  *
- *	$Id$
+ *	$Id: ivysocket.c 3510 2011-11-02 16:53:03Z fcolin $
  *
  *	Please refer to file version.h for the
  *	copyright notice regarding this software
@@ -344,8 +344,8 @@ Server SocketServer(int ipv6, unsigned short port,
 
 	if (setsockopt (fd, SOL_SOCKET, SO_REUSEPORT, (char *)&one, sizeof (one)) < 0)
 	  {
-	    perror ("*** WARNING non existent socket option SO_REUSEPORT, Ivy may MISBEHAVE ***");
-	    //	    exit(0);
+	    perror ("*** set socket option REUSEPORT ***");
+	    exit(0);
 	  }
 #endif
 	
@@ -951,10 +951,10 @@ Client SocketBroadcastCreate (int ipv6, unsigned short port,
 #ifdef SO_REUSEPORT
 
 	if (setsockopt (handle, SOL_SOCKET, SO_REUSEPORT, (char *)&on, sizeof (on)) < 0)
-	  {
-	    perror ("*** WARNING non existent socket option SO_REUSEPORT, Ivy may MISBEHAVE ***");
-	    //return NULL;
-	  }
+		{
+			perror ("*** set socket option REUSEPORT ***");
+			return NULL;
+		}
 #endif
 	/* wee need to broadcast */
 	if (setsockopt (handle, SOL_SOCKET, SO_BROADCAST, (char *)&on, sizeof (on)) < 0)

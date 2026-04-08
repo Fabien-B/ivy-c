@@ -9,7 +9,7 @@
  *	Authors: François-Régis Colin <fcolin@cena.dgac.fr>
  *		 Stéphane Chatty <chatty@cena.dgac.fr>
  *
- *	$Id$
+ *	$Id: ivyxtloop.c 3460 2011-01-24 13:39:15Z bustico $
  * 
  *	Please refer to file version.h for the
  *	copyright notice regarding this software

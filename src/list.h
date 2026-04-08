@@ -8,7 +8,7 @@
  *
  *	Authors: François-Régis Colin <fcolin@cena.dgac.fr>
  *
- *	$Id$
+ *	$Id: list.h 3301 2008-05-20 13:58:45Z fcolin $
  * 
  *	Please refer to file version.h for the
  *	copyright notice regarding this software

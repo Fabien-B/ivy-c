@@ -8,7 +8,7 @@
 *
 *	Authors: François-Régis Colin <fcolin@cena.fr>
 *
-*	$Id$
+*	$Id: ivyglibloop.h 1231 2006-04-21 16:34:15Z fcolin $
 * 
 *	Please refer to file version.h for the
 *	copyright notice regarding this software
