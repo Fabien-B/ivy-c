@@ -47,7 +47,7 @@ export
 
 XTINC = -I$(X11_PREFIX)/include
 XTLIB = -L$(X11_PREFIX)$(LIB) -lXt -lX11 -lSM -lICE
-HAVE_GLIB = $(shell pkg-config --exists glib-2.0 && echo 'yes')
+HAVE_GLIB = $(shell pkg-config --atleast-version=2.36 glib-2.0 && echo 'yes')
 GLIBINC = `pkg-config --cflags glib-2.0`
 GLIBLIB = `pkg-config --libs glib-2.0`
 GLUTINC = -I/usr/include -I.
@@ -131,7 +131,7 @@ OBJ = ivyloop.o timer.o ivysocket.o ivy.o ivybuffer.o ivyfifo.o ivybind.o interv
 OMPOBJ = ivyloop.o timer.o ivysocket_omp.o ivy_omp.o ivybuffer.o ivyfifo.o ivybind.o intervalRegexp.o param.o
 GOBJ = ivyloop.o timer.o ivysocket.o givy.o ivybuffer.o ivyfifo.o ivybind.o intervalRegexp.o param.o
 XTOBJ = ivyxtloop.o ivysocket.o ivy.o ivybuffer.o ivyfifo.o ivybind.o intervalRegexp.o param.o
-GLIBOBJ = ivyglibloop.o ivysocket.o ivy.o ivybuffer.o ivyfifo.o ivybind.o intervalRegexp.o param.o
+GLIBOBJ = ivyglibloop.o ivyglibtimer.o ivysocket.o ivy.o ivybuffer.o ivyfifo.o ivybind.o intervalRegexp.o param.o
 GLUTOBJ = ivyglutloop.o ivysocket.o ivy.o ivybuffer.o ivyfifo.o ivybind.o intervalRegexp.o param.o
 TCLOBJ = ivytcl.o  timer.o ivysocket.o givy.o ivybuffer.o ivyfifo.o ivybind.o intervalRegexp.o param.o
 # WINDOWS add ivyloop.o if TCL_CHANNEL_INTEGRATION is not set
@@ -183,8 +183,11 @@ ivysocket_omp.o: ivysocket.c
 ivyglutloop.o: ivyglutloop.c ivyglutloop.h
 	$(CC) -c $(CFLAGS) $(GLUTINC) ivyglutloop.c
 
-ivyglibloop.o: ivyglibloop.c ivyglibloop.h
+ivyglibloop.o: ivyglibloop.c ivyglibloop.h ivyglibtimer.h ivychannel.h ivyloop.h timer.h
 	$(CC) -c $(CFLAGS) $(GLIBINC) ivyglibloop.c
+
+ivyglibtimer.o: ivyglibtimer.c ivyglibtimer.h timer.h
+	$(CC) -c $(CFLAGS) $(GLIBINC) ivyglibtimer.c
 
 
 libivy.a: $(OBJ)
@@ -217,37 +220,37 @@ libtclivy.a: $(TCLOBJ)
 # TODO this PCREOBJ is a dirty hack
 
 libivy.so.$(MAJOR).$(MINOR): $(OBJ)
-	$(CC) $(LDFLAGS) -shared -Wl,-soname,libivy.so.$(MAJOR) -o $@ $(OBJ) $(PCRELIB) $(EXTRALIB)
+	$(CC) $(LDFLAGS) -shared -Wl,--no-undefined -Wl,-soname,libivy.so.$(MAJOR) -o $@ $(OBJ) $(PCRELIB) $(EXTRALIB)
 #	$(CC) -G -Wl,-h,libivy.so.$(MAJOR) -o $@ $(OBJ)		#solaris
 #	libtool -dynamic -o $@ $(OBJ) $(PCRELIB) -lc
 
 libivy_omp.so.$(MAJOR).$(MINOR): $(OMPOBJ)
-	$(CC) $(LDFLAGS) -shared -Wl,-soname,libivy.so.$(MAJOR) -o $@ $(OMPOBJ) $(PCRELIB) $(OMPLIB)
+	$(CC) $(LDFLAGS) -shared -Wl,--no-undefined -Wl,-soname,libivy.so.$(MAJOR) -o $@ $(OMPOBJ) $(PCRELIB) $(OMPLIB)
 #	$(CC) -G -Wl,-h,libivy.so.$(MAJOR) -o $@ $(OBJ)		#solaris
 #	libtool -dynamic -o $@ $(OBJ) $(PCRELIB) -lc
 
 libgivy.so.$(MAJOR).$(MINOR): $(GOBJ)
-	$(CC) $(LDFLAGS) -shared -Wl,-soname,libgivy.so.$(MAJOR) -o $@ $(GOBJ) $(PCRELIB)
+	$(CC) $(LDFLAGS) -shared -Wl,--no-undefined -Wl,-soname,libgivy.so.$(MAJOR) -o $@ $(GOBJ) $(PCRELIB) $(EXTRALIB)
 #	$(CC) -G -Wl,-h,libgivy.so.$(MAJOR) -o $@ $(GOBJ) #solaris
 #	libtool -dynamic -o $@ $(GOBJ) $(PCRELIB) -lc
 
 libxtivy.so.$(MAJOR).$(MINOR): $(XTOBJ)
-	$(CC) $(LDFLAGS) -shared -Wl,-soname,libxtivy.so.$(MAJOR) -o $@ $(XTOBJ) $(XTLIB) $(PCRELIB)
+	$(CC) $(LDFLAGS) -shared -Wl,--no-undefined -Wl,-soname,libxtivy.so.$(MAJOR) -o $@ $(XTOBJ) $(XTLIB) $(PCRELIB) $(EXTRALIB)
 #	$(CC) -G -Wl,-h,libxtivy.so.$(MAJOR) -o $@ $(XTOBJ) $(XTLIB) #solaris
 #	libtool -dynamic -o $@ $(XTOBJ) $(XTLIB) $(PCRELIB) -lc
 
 libglibivy.so.$(MAJOR).$(MINOR): $(GLIBOBJ)
-	$(CC) $(LDFLAGS) -shared -Wl,-soname,libglibivy.so.$(MAJOR) -o $@ $(GLIBOBJ) $(GLIBLIB) $(PCRELIB)
+	$(CC) $(LDFLAGS) -shared -Wl,--no-undefined -Wl,-soname,libglibivy.so.$(MAJOR) -o $@ $(GLIBOBJ) $(GLIBLIB) $(PCRELIB) $(EXTRALIB)
 #	$(CC) -G -Wl,-h,libglibivy.so.$(MAJOR) -o $@ $(GLIBOBJ) $(GLIBLIB) #solaris
 #	libtool -dynamic -o $@ $(GLIBOBJ) $(GLIBLIB) $(PCRELIB) -lc
 
 libglutivy.so.$(MAJOR).$(MINOR): $(GLIBOBJ)
-	$(CC) $(LDFLAGS) -shared -Wl,-soname,libglutivy.so.$(MAJOR) -o $@ $(GLUTOBJ) $(GLUTLIB) $(PCRELIB)
+	$(CC) $(LDFLAGS) -shared -Wl,--no-undefined -Wl,-soname,libglutivy.so.$(MAJOR) -o $@ $(GLUTOBJ) $(GLUTLIB) $(PCRELIB) $(EXTRALIB)
 #	$(CC) -G -Wl,-h,libglutivy.so.$(MAJOR) -o $@ $(GLUTOBJ) $(GLUTLIB) #	solaris
 #	libtool -dynamic -o $@ $(GLUTOBJ) $(GLUTLIB) $(PCRELIB) -lc
 
 libtclivy.so.$(MAJOR).$(MINOR): $(TCLOBJ)
-	$(CC) $(LDFLAGS) -shared -Wl,-soname,libtclivy.so.$(MAJOR) -o $@ $(TCLOBJ) $(TCLLIB) $(PCREOBJ) $(PCRELIB)
+	$(CC) $(LDFLAGS) -shared -Wl,--no-undefined -Wl,-soname,libtclivy.so.$(MAJOR) -o $@ $(TCLOBJ) $(TCLLIB) $(PCREOBJ) $(PCRELIB) $(EXTRALIB)
 #	$(CC) -G -Wl,-h,libtclivy.so.$(MAJOR) -o $@ $(TCLOBJ) $(TCLLIB) $(PCREOBJ) # solaris
 #	libtool -dynamic -o $@ $(TCLOBJ) $(TCLLIB) $(PCREOBJ) $(PCRELIB) -lc
 
@@ -302,6 +305,10 @@ includes:
 installliblinks: installlibs
 	ln -fs libivy.so.$(MAJOR).$(MINOR)		$(DESTDIR)$(PREFIX)$(LIB)/libivy.so
 	ln -fs libivy.so.$(MAJOR).$(MINOR)		$(DESTDIR)$(PREFIX)$(LIB)/libivy.so.$(MAJOR)
+ifeq ($(HAVE_GLIB),yes)
+	ln -fs libglibivy.so.$(MAJOR).$(MINOR) $(DESTDIR)$(PREFIX)$(LIB)/libglibivy.so
+	ln -fs libglibivy.so.$(MAJOR).$(MINOR) $(DESTDIR)$(PREFIX)$(LIB)/libglibivy.so.$(MAJOR)
+endif
 # 	ln -fs $(PREFIX)$(LIB)/libgivy.so.$(MAJOR).$(MINOR)		$(DESTDIR)$(PREFIX)$(LIB)/libgivy.so
 # 	ln -fs $(PREFIX)$(LIB)/libgivy.so.$(MAJOR).$(MINOR)		$(DESTDIR)$(PREFIX)$(LIB)/libgivy.so.$(MAJOR)
 # 	-ln -fs $(X11_PREFIX)$(LIB)/libxtivy.so.$(MAJOR).$(MINOR)	$(DESTDIR)$(X11_PREFIX)$(LIB)/libxtivy.so
